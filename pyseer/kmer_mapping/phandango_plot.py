@@ -87,7 +87,7 @@ def main():
         for mapping, kmer_line in zip(mapped_kmers, seer_results):
             total += 1
             p_val = float(kmer_line.split("\t")[lrt_idx])
-            odds = fload(kmer_line.split("\t")[4])
+            odds = float(kmer_line.split("\t")[4])
             if mapping.mapped and p_val > 0:
                 mapped += 1
                 log10p = -log10(p_val)
