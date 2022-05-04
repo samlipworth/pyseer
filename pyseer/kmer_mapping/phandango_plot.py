@@ -80,13 +80,14 @@ def main():
     mapped = 0
     total = 0
     with open(options.output, 'w') as outfile, open(options.output + ".lineage", 'w') as linfile:
-        outfile.write("\t".join(["SNP", "BP", "minLOG10(P)", "log10(p)", "r^2"]) + "\n")
+        outfile.write("\t".join(["SNP", "BP", "minLOG10(P)", "log10(p)", "r^2","or"]) + "\n")
 
         contigs = set()
         mapped_kmers = bwa_iter(options.reference, tmp_fa.name, "mem")
         for mapping, kmer_line in zip(mapped_kmers, seer_results):
             total += 1
             p_val = float(kmer_line.split("\t")[lrt_idx])
+            odds = fload(kmer_line.split("\t")[4])
             if mapping.mapped and p_val > 0:
                 mapped += 1
                 log10p = -log10(p_val)
@@ -97,7 +98,7 @@ def main():
                             sys.stderr.write("WARNING: New chromosome/contig observed: " + contig + "\n")
                             sys.stderr.write("WARNING: Points will be overplotted - add previous contig length to BP\n")
 
-                    outfile.write("\t".join([contig, ".", str(start) + ".." + str(end), str(log10p), "0"]) + "\n")
+                    outfile.write("\t".join([contig, ".", str(start) + ".." + str(end), str(log10p), "0",str(odds)]) + "\n")
                     if lin_idx:
                         linfile.write(kmer_line.split("\t")[lin_idx] + "\n")
 
